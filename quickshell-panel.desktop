@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Quickshell Status Panel
+Comment=Launches the custom QML desktop panel at login
+Exec=/usr/bin/qs
+Icon=utilities-system-monitor
+Terminal=false
+StartupNotify=false
+X-GNOME-Autostart-enabled=true
