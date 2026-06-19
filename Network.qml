@@ -27,8 +27,8 @@ Item {
     // --- Internal State Properties ---
     property real _netUpBitsSec: 0
     property real _netDownBitsSec: 0
-    property real _netUpMax: 1000 // Default minimum baseline fallback
-    property real _netDownMax: 1000
+    property real _netUpMax: 1
+    property real _netDownMax: 1
 
     property var historyUp: []
     property var historyDown: []
@@ -36,6 +36,14 @@ Item {
     property int lastRxBytes: 0
     property int lastTxBytes: 0
     property bool isInitialized: false
+
+    // Helper formatting function to convert bits/sec to readable metrics (Kbps, Mbps)
+    function formatSpeed(bits) { 
+        if (bits >= 1024 * 1024 * 1024) return (bits / (1024 * 1024 * 1024)).toFixed(0) + " Gbps"
+        if (bits >= 1024 * 1024) return (bits / (1024 * 1024)).toFixed(0) + " Mbps"
+        if (bits >= 1024) return (bits / 1024).toFixed(0) + " Kbps"
+        return bits.toFixed(0) + " bps"
+    }    
 
     // ==================================================================
     // 2. Display Data on UI Layout (Standardized Positioner)
@@ -89,7 +97,7 @@ Item {
                 anchors.topMargin: -2 // Closes structural text gap rows cleanly
                 color: "#00BBFF"
                 font.pixelSize: 12
-                text: "Up: " + (root.netUpBitsSec / 1000).toFixed(0) + " Kbps"
+                text: "Up: " + root.formatSpeed(root.netUpBitsSec)
             }
             Text {
                 anchors.right: parent.right
@@ -97,7 +105,7 @@ Item {
                 anchors.topMargin: -2
                 color: "#00BBFF"
                 font.pixelSize: 12
-                text: "Max: " + (root.netUpMax / 1000).toFixed(0) + " Kbps"
+                text: "Max: " + root.formatSpeed(root.netUpMax)
             }
         }
 
@@ -233,7 +241,7 @@ Item {
                 anchors.topMargin: -2 // Pulls layout upward to tightly hug the graph border above it
                 color: "#FF3333"
                 font.pixelSize: 12
-                text: "Down: " + (root.netDownBitsSec / 1000).toFixed(0) + " Kbps"
+                text: "Down: " + root.formatSpeed(root.netDownBitsSec)
             }
             Text {
                 anchors.right: parent.right
@@ -241,7 +249,7 @@ Item {
                 anchors.topMargin: -2
                 color: "#FF3333"
                 font.pixelSize: 12
-                text: "Max: " + (root.netDownMax / 1000).toFixed(0) + " Kbps"
+                text: "Max: " + root.formatSpeed(root.netDownMax)
             }
         }
     } // End of master mainColumn positioner tree
@@ -330,8 +338,8 @@ Item {
             root.historyUp = upHist
             root.historyDown = downHist
 
-            root._netUpMax = Math.max(...upHist, 1000)
-            root._netDownMax = Math.max(...downHist, 1000)
+            root._netUpMax = Math.max(...upHist, 1)
+            root._netDownMax = Math.max(...downHist, 1)
 
             state.lastRx = currentRx
             state.lastTx = currentTx
