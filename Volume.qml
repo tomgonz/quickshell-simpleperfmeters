@@ -88,7 +88,8 @@ Item {
             id: barContainer
             width: parent.width
             height: 12
-            border.color: "#55FF55"
+            //border.color: "#55FF55"
+            border.color: (Pipewire.defaultAudioSink?.audio.muted ?? false) ? "#339933" : "#55FF55"
             border.width: 1            
             color: "#66000000"
 
@@ -99,7 +100,9 @@ Item {
                 anchors.bottom: parent.bottom
                 anchors.margins: 1 // Keeps the fill neatly bounded inside your border width
                 width: Math.max(0, (parent.width - 2) * (Pipewire.defaultAudioSink?.audio.volume ?? 0))
-                color: "#55FF55"
+                //color: "#55FF55"
+                color: (Pipewire.defaultAudioSink?.audio.muted ?? false) ? "#339933" : "#55FF55"
+
             }
 
             MouseArea {
