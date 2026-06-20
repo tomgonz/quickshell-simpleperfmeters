@@ -52,6 +52,7 @@ To swap out, add, or customize your storage monitoring components, look into the
 2. Add your custom visual descriptive drive label string (`text: "Drive Model Type"`).
 3. Set your contextual layout partition path display subtitle (`text: "(/path)"`).
 4. Inject your true system mount path string down to the core engine module (`mountPoint: "/target"`).
+5. In some virtualization cases you may need to set the disk device (`mountDev: "nvme0n1p3"`).
 
 Ensure any new widget `id` tags you initialize are registered up into the top compositor window masking table structure (`mask: Region { ... }`) to enable correct backdrop window transparency clip-outs!
 
