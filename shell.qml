@@ -33,6 +33,9 @@ ShellRoot {
         anchors.right: true
         margins.right: 4 
         margins.top: 4
+
+        property string widgetBGcolor: "#DD323232"          // #AARRGGBB
+        property string widgetBorderColor: "CC000000"
         property int widgetSpacing: 5
 
         // ==================================================================
@@ -109,8 +112,8 @@ ShellRoot {
                 width: parent.width
                 height: Math.floor(0.283 * rootWindow.mywidth + 61.8)
                 radius: rootWindow.widgetRadius
-                color: "#CC323232"
-                border.color: "#CC000000"
+                color: rootWindow.widgetBGcolor
+                border.color: rootWindow.widgetBorderColor
                 border.width: 2
 
                 Clock {
@@ -128,8 +131,8 @@ ShellRoot {
 //                width: parent.width
 //                height: Math.floor(0.233 * rootWindow.mywidth + 49.8)
 //                radius: rootWindow.widgetRadius
-//                color: "#CC323232"
-//                border.color: "#CC000000"
+//                color: rootWindow.widgetBGcolor
+//                border.color: rootWindow.widgetBorderColor
 //                border.width: 2
 //
 //                ClockUTC {
@@ -147,8 +150,8 @@ ShellRoot {
                 width: parent.width
                 height: 142
                 radius: rootWindow.widgetRadius
-                color: "#CC323232"
-                border.color: "#CC000000"
+                color: rootWindow.widgetBGcolor
+                border.color: rootWindow.widgetBorderColor
                 border.width: 2
 
                 Column {
@@ -179,8 +182,8 @@ ShellRoot {
                 width: parent.width
                 height: 116
                 radius: rootWindow.widgetRadius
-                color: "#CC323232"
-                border.color: "#CC000000"
+                color: rootWindow.widgetBGcolor
+                border.color: rootWindow.widgetBorderColor
                 border.width: 2
 
                 MemSwap {
@@ -199,8 +202,8 @@ ShellRoot {
                 width: parent.width
                 height: 134
                 radius: rootWindow.widgetRadius
-                color: "#CC323232"
-                border.color: "#CC000000"
+                color: rootWindow.widgetBGcolor
+                border.color: rootWindow.widgetBorderColor
                 border.width: 2
 
                 Network {
@@ -220,8 +223,8 @@ ShellRoot {
                 width: parent.width
                 height: 142
                 radius: rootWindow.widgetRadius
-                color: "#CC323232"
-                border.color: "#CC000000"
+                color: rootWindow.widgetBGcolor
+                border.color: rootWindow.widgetBorderColor
                 border.width: 2
 
                 // Standardized Header Container (Left & Right text)
@@ -267,8 +270,8 @@ ShellRoot {
                 width: parent.width
                 height: 142
                 radius: rootWindow.widgetRadius
-                color: "#CC323232"
-                border.color: "#CC000000"
+                color: rootWindow.widgetBGcolor
+                border.color: rootWindow.widgetBorderColor
                 border.width: 2
 
                 Item {
@@ -313,8 +316,8 @@ ShellRoot {
                 width: parent.width
                 height: 142
                 radius: rootWindow.widgetRadius
-                color: "#CC323232"
-                border.color: "#CC000000"
+                color: rootWindow.widgetBGcolor
+                border.color: rootWindow.widgetBorderColor
                 border.width: 2
 
                 Item {
@@ -359,8 +362,8 @@ ShellRoot {
                 width: parent.width
                 height: 50
                 radius: rootWindow.widgetRadius
-                color: "#CC323232"
-                border.color: "#CC000000"
+                color: rootWindow.widgetBGcolor
+                border.color: rootWindow.widgetBorderColor
                 border.width: 2
 
                 Volume {
