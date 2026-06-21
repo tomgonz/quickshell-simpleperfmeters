@@ -1,4 +1,7 @@
 // Disk.qml
+//
+// GPL-3.0 license
+//
 import QtQuick
 import QtQuick.Layouts
 import Quickshell

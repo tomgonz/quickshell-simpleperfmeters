@@ -1,4 +1,7 @@
 // ClockUTC.qml
+//
+// GPL-3.0 license
+//
 import QtQuick
 import QtQuick.Controls
 import Quickshell

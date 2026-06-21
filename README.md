@@ -56,3 +56,5 @@ To swap out, add, or customize your storage monitoring components, look into the
 
 Ensure any new widget `id` tags you initialize are registered up into the top compositor window masking table structure (`mask: Region { ... }`) to enable correct backdrop window transparency clip-outs!
 
+## License
+GPL-3.0

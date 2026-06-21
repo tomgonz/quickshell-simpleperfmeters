@@ -1,4 +1,7 @@
 // CpuGraph.qml
+//
+// GPL-3.0 license
+//
 import QtQuick
 import Quickshell
 import Quickshell.Io

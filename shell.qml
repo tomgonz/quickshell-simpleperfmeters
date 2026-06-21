@@ -1,6 +1,6 @@
 // shell.qml
 //
-// GPLv3 License
+// GPL-3.0 license
 //
 import QtQuick
 import QtQuick.Layouts
