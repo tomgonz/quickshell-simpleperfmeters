@@ -23,18 +23,20 @@ A highly optimized, System Monitor Panel of widgets, Clock, Cpu, Memory, Network
 ## Installation & Deployment
 
 1. Make sure you have `quickshell` package installed on your system.  Either from your repo, or from: https://git.outfoxxed.me/quickshell/quickshell.git
+These System Monitor widgets were tested with Quickshell 0.2.1 from the Fedora repo.  Should work on the latest 0.3.0 from the GIT repo.
 2. Clone or move these configuration files into your local directory:
    ```bash
    mkdir -p ~/.config/quickshell
    cd ~/.config/quickshell
    git clone https://github.com/tomgonz/tom-quickshell-sysmon  .
    ```
-3. Edit configuration variables in the shell.qml file to suite your needs.  netDev, cpuTempSensors..., etc...
+3. Edit configuration variables in the shell.qml file to suit your needs.  netDev, cpuTempSensors..., etc...
 
 4. Run the dashboard using the quickshell daemon execution engine:
    ```bash
    qs
    ```
+This will run the shell.qml file by default.
 5. Setup autostart at login.
    ```bash
    cp quickshell-panel.desktop  ~/.config/autostart/
@@ -65,8 +67,6 @@ A highly optimized, System Monitor Panel of widgets, Clock, Cpu, Memory, Network
    /usr/bin/awk
    /usr/bin/cut
    ```
-
-
 ## Centralized Configuration Guide
 
 All primary environment configurations are managed right at the top of `shell.qml`. Open `shell.qml` to adjust the variables below to match your hardware layout:
