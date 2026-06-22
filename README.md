@@ -73,7 +73,7 @@ All primary environment configurations are managed right at the top of `shell.qm
 
 | Variable | Default Value | Description |
 | :--- | :--- | :--- |
-| `globalScale` | `1.00` | Multiplier scale factor. Safely scales all text fonts, layouts, canvas dimensions, and window frames seamlessly. |
+| `globalScale` | `1.00` | Multiplier scale factor. Safely scales all text fonts, layouts, canvas dimensions, and window frames seamlessly. Best usable range from 0.85 to 1.20 scaling. |
 | `mywidth` | `220` | Core physical bounding box width of your status bar panel tracker. |
 | `myheight` | `1440` | Maximum vertical pixel space matching your monitor panel display boundaries. |
 | `netDev` | `"enp9s0"` | Your target hardware network interface title. (Run `ip link` to verify yours). |
