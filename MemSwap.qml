@@ -46,12 +46,12 @@ Item {
             spacing: 4
             
             Text {
-                text: "Mem: " + root.memTotal.toFixed(1) + "G / "
+                text: "Mem: " + root.formatSize(root.memTotal) + " / "
                 color: "white"
                 font.pixelSize: 13
             }
             Text {
-                text: "Swap: " + root.swapTotal.toFixed(1) + "G"
+                text: "Swap: " + root.formatSize(root.swapTotal)
                 color: "white"
                 font.pixelSize: 13
             }
@@ -118,7 +118,7 @@ Item {
                 anchors.left: parent.left
                 anchors.top: parent.top
                 anchors.topMargin: -2 // Shuts padding gap gaps tightly
-                text: "Mem used:  " + root.memUsed.toFixed(1) + "G   (" + root.memPerUsed.toFixed(1) + "%)"
+                text: "Mem used:  " + formatSize(root.memUsed) + "    (" + root.memPerUsed.toFixed(1) + "%)"
                 color: "#00FF00"
                 font.pixelSize: 12
             }
@@ -164,12 +164,22 @@ Item {
                 anchors.left: parent.left
                 anchors.top: parent.top
                 anchors.topMargin: -2
-                text: "Swap used:  " + root.swapUsed.toFixed(1) + "G   (" + root.swapPerUsed.toFixed(1) + "%)"
+                text: "Swap used:  " + formatSize(root.swapUsed) + "    (" + root.swapPerUsed.toFixed(1) + "%)"
                 color: "#FF3333"
                 font.pixelSize: 12
             }
         }
     }
+
+    // Helper formatting function to convert bits/sec to readable metrics (Kbps, Mbps)
+    function formatSize(value) {
+        if (value >= 1024 * 1024 * 1024) return (value / (1024 * 1024 * 1024)).toFixed(1) + " GB"
+        if (value >= 1024 * 1024) return (value / (1024 * 1024)).toFixed(1) + " MB"
+        if (value >= 1024) return (value / 1024).toFixed(1) + " KB"
+        return value.toFixed(1) + " B"
+    }
+
+
 
     // ==================================================================
     //  Data Gathering Subsystems
@@ -189,7 +199,8 @@ Item {
                 if (parts.length < 2) return 0;
                 let valStr = parts[1].trim().split(/\s+/)[0];
                 let kb = parseInt(valStr);
-                return isNaN(kb) ? 0 : kb / (1024 * 1024); 
+
+                return isNaN(kb) ? 0 : kb * 1024;   // return Bytes
             }
 
             for (let i = 0; i < lines.length; i++) {
@@ -203,6 +214,7 @@ Item {
             root.memTotal = data.memTotal;
             root.memUsed = data.memTotal - data.memAvailable;
             root.memPerUsed = data.memTotal > 0 ? (root.memUsed / data.memTotal * 100) : 0;
+
             root.swapTotal = data.swapTotal;
             root.swapUsed = data.swapTotal - data.swapFree;
             root.swapPerUsed = data.swapTotal > 0 ? (root.swapUsed / data.swapTotal * 100) : 0;
