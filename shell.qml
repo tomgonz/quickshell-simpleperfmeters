@@ -41,12 +41,11 @@ ShellRoot {
         // ==================================================================
         // Hardware Thermal Configuration Controls
         // ==================================================================
-        // run "sensors -j" to see all sensor data to choose your temp sensor
-        // AMD Defaults:  "k10temp-pci-00c3" and "Tctl" and "temp1_input"
-        // Intel Options: "coretemp-isa-0000" and "Package id 0" and "temp1_input"
-        property string cpuTempSensorChip:   "k10temp-pci-00c3"
+        // Quickshell will look for CPU temp in the /sys/class/hwmon/* with these strings.
+        // AMD Defaults:  "k10temp-pci-00c3" and "Tctl"
+        // Intel Options: "coretemp" and "Package id 0"
+        property string cpuTempSensorChip:   "k10temp"
         property string cpuTempSensorKey:    "Tctl"
-        property string cpuTempSensorSubKey: "temp1_input"
 
         // Window size bounding boxes must track raw variables if child handles transform scaling
         implicitWidth: Math.floor(mywidth * globalScale) +2
@@ -167,7 +166,7 @@ ShellRoot {
                         containerWidth: rootWindow.containerWidth
                         sensorChipName: rootWindow.cpuTempSensorChip
                         sensorKeyName:  rootWindow.cpuTempSensorKey
-                        sensorSubKey:   rootWindow.cpuTempSensorSubKey
+//                        sensorSubKey:   rootWindow.cpuTempSensorSubKey
                     }
 
                     CpuBars {

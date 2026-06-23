@@ -19,7 +19,10 @@ Item {
     // for CPU temps
     required property string sensorChipName
     required property string sensorKeyName
-    required property string sensorSubKey
+
+    // This will hold the exact path discovered on startup (e.g. "/sys/class/hwmon/hwmon5/temp1_input")
+    property string resolvedTempPath: ""
+
 
     // Dynamic Sizing Metrics
     property int maxHistoryPoints: Math.floor(containerWidth) - 2
@@ -146,7 +149,7 @@ Item {
     }
 
     // ==================================================================
-    // 3. High Performance, Zero-Fork Data Gathering Subsystems
+    // Zero-Fork Data Gathering Subsystems
     // ==================================================================
     
     // One-shot CPU Model Reader
@@ -169,7 +172,7 @@ Item {
         }
     }
 
-    // Core Load Statistics Reader
+    // Corei CPU Load Statistics Reader
     FileView {
         id: statReader
         path: "/proc/stat"
@@ -223,29 +226,95 @@ Item {
         }
     }
 
-    // Sensor Process (Maintained wrapper safely but throttled separately for low load)
-    Process {
-        id: tempProc
-        command: ["sensors", "-j", root.sensorChipName]
-        running: false
-        stdout: SplitParser {
-            onRead: (data) => {
-               _buf += data;
-               try {
-                    let j = JSON.parse(_buf);
-                    let chipData = j[root.sensorChipName]
-                    if (chipData) {
-                       let targetCategory = chipData[root.sensorKeyName];
-                       if (targetCategory) {
-                          let rawValue = targetCategory[root.sensorSubKey];
-                          if (rawValue !== undefined && !isNaN(rawValue)) {
-                             root.cpuTemp = Math.round(rawValue) + "°C";
-                          }
-                       }
-                    }
-                    _buf = "";
-                    tempProc.running = false;
-                 } catch (e) { /* Incomplete data buffer stream pass */ }
+
+    //----------------------------------------------
+    // CPU Temp data processing (Hybrid Timer/Event State Machine)
+    //----------------------------------------------
+    
+    // Internal state tracking properties
+    property int _scanHwmonIdx: 0
+    property int _scanLabelIdx: 1
+    property string _foundHwmonPath: ""
+    property bool _isInitialized: false
+
+    // 1. Single reusable file reader
+    FileView {
+        id: sysfsReader
+        printErrors: false // Prevents flooding logs when probing non-existent paths
+        
+        onLoaded: {
+            // Securely evaluate the text string matching your working blocks
+            let content = (typeof text === "function") ? text() : text;
+            let cleaned = content ? content.trim() : "";
+            if (!cleaned) return;
+
+            // PHASE 1: Probing for driver match (e.g., "k10temp")
+            if (root._foundHwmonPath === "" && !root._isInitialized) {
+                if (cleaned === root.sensorChipName) {
+                    // Match found! Lock directory path and shift state
+                    root._foundHwmonPath = "/sys/class/hwmon/hwmon" + (root._scanHwmonIdx - 1);
+                }
+            } 
+            
+            // PHASE 2: Probing for sensor key match (e.g., "Tctl")
+            else if (root._foundHwmonPath !== "" && !root._isInitialized) {
+                if (cleaned === root.sensorKeyName) {
+                    root.resolvedTempPath = root._foundHwmonPath + "/temp" + (root._scanLabelIdx - 1) + "_input";
+                    root._isInitialized = true;
+                }
+            } 
+            
+            // PHASE 3: Standard Runtime Polling
+            else if (root._isInitialized) {
+                let milliDegrees = Number(cleaned);
+                if (!isNaN(milliDegrees)) {
+                    root.cpuTemp = Math.round(milliDegrees / 1000) + "°C";
+                }
+            }
+        }
+    }
+
+    // 2. State Machine Driver: Drives indexing quickly at start, then switches to monitoring
+    // This part only runs once at startup.
+    // Finds the temp file needed from supplied vars in the /sys filesystem.
+    Timer {
+        id: tempUpdateTimer
+        interval: root._isInitialized ? 2000 : 30 // 30ms ticks for fast discovery, 2s for runtime tracking
+        running: true
+        repeat: true
+        triggeredOnStart: true
+
+        onTriggered: {
+            // STEP A: Scan through hwmon0 to hwmon12 directories
+            if (root._foundHwmonPath === "" && !root._isInitialized) {
+                if (root._scanHwmonIdx < 13) {
+                    sysfsReader.path = "/sys/class/hwmon/hwmon" + root._scanHwmonIdx + "/name";
+                    root._scanHwmonIdx++;
+                } else {
+                    // Total search failure fallback: route straight to universal ACPI zone
+                    root.resolvedTempPath = "/sys/class/thermal/thermal_zone0/temp";
+                    root._isInitialized = true;
+                }
+                return;
+            }
+
+            // STEP B: Driver folder found, now scan label numbers 1 through 8
+            if (root._foundHwmonPath !== "" && !root._isInitialized) {
+                if (root._scanLabelIdx <= 8) {
+                    sysfsReader.path = root._foundHwmonPath + "/temp" + root._scanLabelIdx + "_label";
+                    root._scanLabelIdx++;
+                } else {
+                    // Fallback to default temp1_input if precise key label string is missing
+                    root.resolvedTempPath = root._foundHwmonPath + "/temp1_input";
+                    root._isInitialized = true;
+                }
+                return;
+            }
+
+            // STEP C: Active Monitoring Routine
+            if (root._isInitialized) {
+                sysfsReader.path = root.resolvedTempPath;
+                sysfsReader.reload();
             }
         }
     }
@@ -261,19 +330,6 @@ Item {
         onTriggered: {
             statReader.reload();
             freqReader.reload();
-        }
-    }
-
-    // Keep temperature on a separate, gentler 2-second pace since hardware temps move slower
-    Timer {
-        interval: 2000
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
-            if (!tempProc.running) {
-                tempProc.running = true;
-            }
         }
     }
 }

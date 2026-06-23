@@ -77,9 +77,8 @@ All primary environment configurations are managed right at the top of `shell.qm
 | `mywidth` | `220` | Core physical bounding box width of your status bar panel tracker. |
 | `myheight` | `1440` | Maximum vertical pixel space matching your monitor panel display boundaries. |
 | `netDev` | `"enp9s0"` | Your target hardware network interface title. (Run `ip link` to verify yours). |
-| `cpuTempSensorChip` | `"k10temp-pci-00c3"` | The primary hardware sensor device handle parsed from `sensors -j`. |
+| `cpuTempSensorChip` | `"k10temp"` | The primary hardware sensor device handle from /sys/class/hwmon/hwmon*/name. |
 | `cpuTempSensorKey` | `"Tctl"` | The specific thermal package matrix profile category. |
-| `cpuTempSensorSubKey` | `"temp1_input"` | The terminal sub-key property used to compute whole integer degree values. |
 | `aboveWindows` | `"true"` | Set Panel in front or behind all other windows.|
 
 ## Modifying Storage Widgets
