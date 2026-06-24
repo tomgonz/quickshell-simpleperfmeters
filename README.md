@@ -16,8 +16,8 @@ A highly optimized, System Monitor Panel of widgets, Clock, Cpu, Memory, Network
 
 ## Features
 
-- **Very Efficient Processing:** All shell process loops (`cat`, `awk`, `grep`) with high-speed virtual `FileView` handles.
-- **Hardware Agnostic Thermal Tracking:** Fully parameterized 3-layer JSON lookup to support modern AMD (`k10temp`) and Intel (`coretemp`) sensors.
+- **Very Efficient Processing:** Replaced all shell process loops (`cat`, `awk`, `grep`) with high-speed virtual `FileView` handles.
+- **Hardware Agnostic Thermal Tracking:** Fully parameterized 2-layer lookup to support modern AMD (`k10temp`) and Intel (`coretemp`) sensors.
 - **Unified Graph Design:** Smooth, right-to-left scrolling visualizations across all core telemetry frameworks.
 
 ## Installation & Deployment
@@ -57,6 +57,7 @@ This will run the shell.qml file by default.
    /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
    /sys/class/net/{interfaceName}/statistics/rx_bytes
    /sys/class/net/{interfaceName}/statistics/tx_bytes
+   /sys/class/hwmon/hwmon*/*
    ```
 3. Bash commands...
    ```bash
