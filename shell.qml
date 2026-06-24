@@ -20,7 +20,7 @@ ShellRoot {
 
         // Main panel size
         property int mywidth: 220
-        property int myheight: 1440 // You can safely set this to your screen height
+        property int myheight: 1440    // You can safely set this to your screen height
         property int containerWidth: mywidth - 20
         property int widgetRadius: 8
 
@@ -168,7 +168,6 @@ ShellRoot {
                         containerWidth: rootWindow.containerWidth
                         sensorChipName: rootWindow.cpuTempSensorChip
                         sensorKeyName:  rootWindow.cpuTempSensorKey
-//                        sensorSubKey:   rootWindow.cpuTempSensorSubKey
                     }
 
                     CpuBars {
