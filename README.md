@@ -77,7 +77,7 @@ All primary environment configurations are managed right at the top of `shell.qm
 | `myheight` | `1440` | Maximum vertical pixel space matching your monitor panel display boundaries. |
 | `netDev` | `"enp9s0"` | Your target hardware network interface title. (Run `ip link` to verify yours). |
 | `cpuTempSensorChip` | `"k10temp"` | The primary hardware sensor device handle from /sys/class/hwmon/hwmon*/name. |
-| `cpuTempSensorKey` | `"Tctl"` | The specific thermal package matrix profile category. |
+| `cpuTempSensorKey` | `"Tctl"` | The specific thermal package matrix profile category from /sys/class/hwmon/hwmon*/temp*_label |
 | `aboveWindows` | `"true"` | Set Panel in front or behind all other windows.|
 
 ## Modifying Storage Widgets
