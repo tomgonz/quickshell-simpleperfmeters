@@ -264,7 +264,7 @@ Item {
     // Dynamic IP address node evaluation channel
     Process {
         id: ipLookup
-        command: ["sh", "-c", "ip -o -4 addr show '" + root.interfaceName + "' | awk '{print $4}' | cut -d/ -f1"]
+        command: ["sh", "-c", "ip -o -4 addr show '" + root.interfaceName + "' | awk '/ inet / {split($4, a, \"/\"); print a[1]}'"]
         running: true
 
         stdout: SplitParser {

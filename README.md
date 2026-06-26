@@ -61,12 +61,10 @@ A highly optimized, System Monitor Panel of widgets, Clock, Cpu, Memory, Network
    ```
 3. Bash commands...
    ```bash
-   /usr/bin/sensors
    /usr/bin/df
    /usr/bin/sh
    /usr/bin/ip
    /usr/bin/awk
-   /usr/bin/cut
    ```
 ## Centralized Configuration Guide
 
