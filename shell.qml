@@ -230,10 +230,11 @@ ShellRoot {
                 border.width: 2
 
                 Disk {
-                    containerWidth: rootWindow.containerWidth
                     modelSize: "SSD M.2 4.0T"          // CHANGE THIS  *****
                     mountPoint: "/home"                // CHANGE THIS  *****
                     mountDev: ""                       // leave this blank, unless needed *****
+                    containerWidth: rootWindow.containerWidth
+
                     anchors.top: parent.top
                     anchors.topMargin: 0
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -253,10 +254,11 @@ ShellRoot {
                 border.width: 2
 
                 Disk {
-                    containerWidth: rootWindow.containerWidth
                     modelSize: "Disk USB 4.0T"         // CHANGE THIS  *****
                     mountPoint: "/backups"             // CHANGE THIS  *****
                     mountDev: ""                       // leave this blank, unless needed *****
+                    containerWidth: rootWindow.containerWidth
+
                     anchors.top: parent.top
                     anchors.topMargin: 0
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -276,10 +278,11 @@ ShellRoot {
                 border.width: 2
 
                 Disk {
-                    containerWidth: rootWindow.containerWidth
                     modelSize: "SSD PCIe 1.6T"         // CHANGE THIS  *****
                     mountPoint: "/timeshift"           // CHANGE THIS  *****
                     mountDev: ""                       // leave this blank, unless needed *****
+                    containerWidth: rootWindow.containerWidth
+
                     anchors.top: parent.top
                     anchors.topMargin: 0
                     anchors.horizontalCenter: parent.horizontalCenter
