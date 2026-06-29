@@ -20,7 +20,6 @@ ShellRoot {
 
         // Main panel size
         property int mywidth: 220
-        property int myheight: 1440    // You can safely set this to your screen height
         property int containerWidth: mywidth - 20
         property int widgetRadius: 8
 
@@ -35,7 +34,7 @@ ShellRoot {
         margins.top: 4
 
         property string widgetBGcolor: "#DD323232"          // #AARRGGBB
-        property string widgetBorderColor: "CC000000"
+        property string widgetBorderColor: "#CC000000"
         property int widgetSpacing: 5
 
         // ==================================================================
@@ -51,7 +50,7 @@ ShellRoot {
 
         // Window size bounding boxes must track raw variables if child handles transform scaling
         implicitWidth: Math.floor(mywidth * globalScale) +2
-        implicitHeight: Math.floor(myheight * globalScale)
+        implicitHeight: Math.floor(widgetColumn.implicitHeight * globalScale)
 
         // ==================================================================
         // Window Layer Stacking & Behavior Mode
@@ -73,9 +72,9 @@ ShellRoot {
         // 2. Compositor Mask Layer
         // ==================================================================
         mask: Region { 
-            item: clockWidget
+            item: widgetColumn
             Region { item: clockWidget }
-            Region { item: clockUTCWidget }     // uncomment when adding UTC
+//            Region { item: clockUTCWidget }     // uncomment when adding UTC
             Region { item: cpuWidget }
             Region { item: memoryWidget }
             Region { item: networkWidget }
@@ -91,7 +90,7 @@ ShellRoot {
         Column {
             id: widgetColumn
             width: rootWindow.mywidth
-            height: rootWindow.myheight
+            height: implicitHeight
             anchors.left: parent.left
             anchors.top: parent.top
             anchors.margins: 1
@@ -113,7 +112,7 @@ ShellRoot {
                 containerWidth: rootWindow.containerWidth
                 width: parent.width
             }
-
+/*******
             // ----------------------------------
             // Clock UTC widget  (uncomment to add UTC clock)
             // ----------------------------------
@@ -122,7 +121,7 @@ ShellRoot {
                 containerWidth: rootWindow.containerWidth
                 width: parent.width
             }
-
+*******/
             // ----------------------------------
             // CPU Widget
             // ----------------------------------

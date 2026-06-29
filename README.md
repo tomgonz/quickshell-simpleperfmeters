@@ -71,7 +71,6 @@ All primary environment configurations are managed right at the top of `shell.qm
 | :--- | :--- | :--- |
 | `globalScale` | `1.00` | Multiplier scale factor. Safely scales all text fonts, layouts, canvas dimensions, and window frames seamlessly. Best usable range from 0.85 to 1.20 scaling. |
 | `mywidth` | `220` | Core physical bounding box width of your status bar panel tracker. |
-| `myheight` | `1440` | Maximum vertical pixel space matching your monitor panel display boundaries. |
 | `netDev` | `"enp9s0"` | Your target hardware network interface title. (Run `ip link` to verify yours). |
 | `cpuTempSensorChip` | `"k10temp"` | The primary hardware sensor device handle from /sys/class/hwmon/hwmon*/name. |
 | `cpuTempSensorKey` | `"Tctl"` | The specific thermal package matrix profile category from /sys/class/hwmon/hwmon*/temp*_label |
