@@ -33,9 +33,12 @@ ShellRoot {
         margins.right: 4 
         margins.top: 4
 
+        property int widgetBorderWidth: 2
         property string widgetBGcolor: "#DD323232"          // #AARRGGBB
         property string widgetBorderColor: "#CC000000"
         property int widgetSpacing: 5
+        property int cpuSpacing: 1
+        property int graphHeight: 40
 
         // ==================================================================
         // Hardware Thermal Configuration Controls
@@ -49,7 +52,7 @@ ShellRoot {
         property string cpuTempSensorKey:    "Tctl"
 
         // Window size bounding boxes must track raw variables if child handles transform scaling
-        implicitWidth: Math.floor(mywidth * globalScale) +2
+        implicitWidth: Math.floor(mywidth * globalScale) + 2
         implicitHeight: Math.floor(widgetColumn.implicitHeight * globalScale)
 
         // ==================================================================
@@ -111,6 +114,10 @@ ShellRoot {
                 id: clockWidget
                 containerWidth: rootWindow.containerWidth
                 width: parent.width
+                widgetRadius: rootWindow.widgetRadius
+                widgetBGcolor: rootWindow.widgetBGcolor
+                widgetBorderColor: rootWindow.widgetBorderColor
+                widgetBorderWidth: rootWindow.widgetBorderWidth
             }
 /******
             // ----------------------------------
@@ -120,6 +127,10 @@ ShellRoot {
                 id: clockUTCWidget
                 containerWidth: rootWindow.containerWidth
                 width: parent.width
+                widgetRadius: rootWindow.widgetRadius
+                widgetBGcolor: rootWindow.widgetBGcolor
+                widgetBorderColor: rootWindow.widgetBorderColor
+                widgetBorderWidth: rootWindow.widgetBorderWidth
             }
 ******/
             // ----------------------------------
@@ -127,12 +138,16 @@ ShellRoot {
             // ----------------------------------
             CpuGraph {
                 id: cpuWidget
-
                 containerWidth: rootWindow.containerWidth
                 sensorChipName: rootWindow.cpuTempSensorChip
                 sensorKeyName:  rootWindow.cpuTempSensorKey
-
                 width: parent.width
+                widgetRadius: rootWindow.widgetRadius
+                widgetBGcolor: rootWindow.widgetBGcolor
+                widgetBorderColor: rootWindow.widgetBorderColor
+                widgetBorderWidth: rootWindow.widgetBorderWidth
+                cpuSpacing: rootWindow.cpuSpacing
+                graphHeight: rootWindow.graphHeight
             }
 
 
@@ -143,6 +158,11 @@ ShellRoot {
                 id: memoryWidget
                 containerWidth: rootWindow.containerWidth
                 width: parent.width
+                widgetRadius: rootWindow.widgetRadius
+                widgetBGcolor: rootWindow.widgetBGcolor
+                widgetBorderColor: rootWindow.widgetBorderColor
+                widgetBorderWidth: rootWindow.widgetBorderWidth
+                graphHeight: rootWindow.graphHeight
             }
 
             // ----------------------------------
@@ -152,6 +172,12 @@ ShellRoot {
                 id: networkWidget
                 containerWidth: rootWindow.containerWidth
                 width: parent.width
+                widgetRadius: rootWindow.widgetRadius
+                netDev: rootWindow.netDev
+                widgetBGcolor: rootWindow.widgetBGcolor
+                widgetBorderColor: rootWindow.widgetBorderColor
+                widgetBorderWidth: rootWindow.widgetBorderWidth
+                graphHeight: rootWindow.graphHeight
             }
 
 
@@ -160,13 +186,17 @@ ShellRoot {
             // ----------------------------------
             Disk {
                 id: diskWidget1                    // CHANGE THIS  *****
-
                 modelSize: "SSD M.2 4.0T"          // CHANGE THIS  *****
                 mountPoint: "/home"                // CHANGE THIS  *****
                 mountDev: ""                       // leave this blank, unless needed *****
-                containerWidth: rootWindow.containerWidth
 
+                containerWidth: rootWindow.containerWidth
                 width: parent.width
+                widgetRadius: rootWindow.widgetRadius
+                widgetBGcolor: rootWindow.widgetBGcolor
+                widgetBorderColor: rootWindow.widgetBorderColor
+                widgetBorderWidth: rootWindow.widgetBorderWidth
+                graphHeight: rootWindow.graphHeight
             }
 
             // ----------------------------------
@@ -174,13 +204,17 @@ ShellRoot {
             // ----------------------------------
             Disk {
                 id: diskWidget2                    // CHANGE THIS  *****
-
                 modelSize: "Disk USB 4.0T"         // CHANGE THIS  *****
                 mountPoint: "/backups"             // CHANGE THIS  *****
                 mountDev: ""                       // leave this blank, unless needed *****
-                containerWidth: rootWindow.containerWidth
 
+                containerWidth: rootWindow.containerWidth
                 width: parent.width
+                widgetRadius: rootWindow.widgetRadius
+                widgetBGcolor: rootWindow.widgetBGcolor
+                widgetBorderColor: rootWindow.widgetBorderColor
+                widgetBorderWidth: rootWindow.widgetBorderWidth
+                graphHeight: rootWindow.graphHeight
             }
 
             // ----------------------------------
@@ -188,13 +222,17 @@ ShellRoot {
             // ----------------------------------
             Disk {
                 id: diskWidget3                    // CHANGE THIS  *****
-
                 modelSize: "SSD PCIe 1.6T"         // CHANGE THIS  *****
                 mountPoint: "/timeshift"           // CHANGE THIS  *****
                 mountDev: ""                       // leave this blank, unless needed *****
-                containerWidth: rootWindow.containerWidth
 
+                containerWidth: rootWindow.containerWidth
                 width: parent.width
+                widgetRadius: rootWindow.widgetRadius
+                widgetBGcolor: rootWindow.widgetBGcolor
+                widgetBorderColor: rootWindow.widgetBorderColor
+                widgetBorderWidth: rootWindow.widgetBorderWidth
+                graphHeight: rootWindow.graphHeight
             }
 
             // ----------------------------------
@@ -204,6 +242,10 @@ ShellRoot {
                 id: volumeWidget
                 containerWidth: rootWindow.containerWidth
                 width: parent.width
+                widgetRadius: rootWindow.widgetRadius
+                widgetBGcolor: rootWindow.widgetBGcolor
+                widgetBorderColor: rootWindow.widgetBorderColor
+                widgetBorderWidth: rootWindow.widgetBorderWidth
             }
 
         } // End of master widgetColumn

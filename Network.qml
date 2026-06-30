@@ -5,23 +5,30 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import "FormatHelpers.js" as Utils
 
 Rectangle {
     id: root
 
     // ==================================================================
-    // 1. User Tweakable Configurations & Variables
+    // User Tweakable Configurations & Variables
     // ==================================================================
     required property real containerWidth
+    required property int widgetRadius
+    required property string netDev
+    required property string widgetBGcolor
+    required property string widgetBorderColor
+    required property int widgetBorderWidth
+    required property int graphHeight
 
     height: mainColumn.height + 6
-    radius: rootWindow.widgetRadius
-    color: rootWindow.widgetBGcolor
-    border.color: rootWindow.widgetBorderColor
-    border.width: 2
+    radius: root.widgetRadius
+    color: widgetBGcolor
+    border.color: widgetBorderColor
+    border.width: widgetBorderWidth
 
     // --- Configuration Inputs ---
-    property string interfaceName: rootWindow.netDev
+    property string interfaceName: netDev
     property int historyLimit: Math.floor(containerWidth) - 2
     property string netIP: "0.0.0.0"
 
@@ -44,16 +51,8 @@ Rectangle {
     property int lastTxBytes: 0
     property bool isInitialized: false
 
-    // Helper formatting function to convert bits/sec to readable metrics (Kbps, Mbps)
-    function formatSpeed(bits) { 
-        if (bits >= 1024 * 1024 * 1024) return (bits / (1024 * 1024 * 1024)).toFixed(0) + " Gbps"
-        if (bits >= 1024 * 1024) return (bits / (1024 * 1024)).toFixed(0) + " Mbps"
-        if (bits >= 1024) return (bits / 1024).toFixed(0) + " Kbps"
-        return bits.toFixed(0) + " bps"
-    }    
-
     // ==================================================================
-    // 2. Display Data on UI Layout (Standardized Positioner)
+    // Display Data on UI Layout (Standardized Positioner)
     // ==================================================================
     Column {
         id: mainColumn
@@ -110,7 +109,7 @@ Rectangle {
                 anchors.topMargin: -2 // Closes structural text gap rows cleanly
                 color: "#00BBFF"
                 font.pixelSize: 12
-                text: "Up: " + root.formatSpeed(root.netUpBitsSec)
+                text: "Up: " + Utils.formatUnits(root.netUpBitsSec, 2) + "b/s"
             }
             Text {
                 anchors.right: parent.right
@@ -118,7 +117,7 @@ Rectangle {
                 anchors.topMargin: -2
                 color: "#00BBFF"
                 font.pixelSize: 12
-                text: "Max: " + root.formatSpeed(root.netUpMax)
+                text: "(Max: " + Utils.formatUnits(root.netUpMax, 2) + "b/s)"
             }
         }
 
@@ -128,7 +127,7 @@ Rectangle {
         Rectangle {
             id: uploadGraphContainer
             width: parent.width // Aligned width matches grid frames
-            height: 35
+            height: root.graphHeight
             color: "#66000000"
             border.color: "#AA000000"
             border.width: 1
@@ -205,7 +204,7 @@ Rectangle {
         Rectangle {
             id: downloadGraphContainer
             width: parent.width // Standardized to match master panel tracking lines
-            height: 35
+            height: root.graphHeight
             color: "#66000000"
             border.color: "#AA000000"
             border.width: 1
@@ -285,7 +284,7 @@ Rectangle {
                 anchors.topMargin: -2 // Pulls layout upward to tightly hug the graph border above it
                 color: "#FF3333"
                 font.pixelSize: 12
-                text: "Down: " + root.formatSpeed(root.netDownBitsSec)
+                text: "Down: " + Utils.formatUnits(root.netDownBitsSec, 2) + "b/s"
             }
             Text {
                 anchors.right: parent.right
@@ -293,13 +292,13 @@ Rectangle {
                 anchors.topMargin: -2
                 color: "#FF3333"
                 font.pixelSize: 12
-                text: "Max: " + root.formatSpeed(root.netDownMax)
+                text: "(Max: " + Utils.formatUnits(root.netDownMax, 2) + "b/s)"
             }
         }
     } // End of master mainColumn positioner tree
 
     // ==================================================================
-    //  3. Data Gathering & Sysfs Kernel Processing Channels
+    // Data Gathering & Sysfs Kernel Processing Channels
     // ==================================================================
 
     // Dynamic IP address node evaluation channel

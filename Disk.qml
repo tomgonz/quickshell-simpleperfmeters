@@ -7,23 +7,29 @@ import QtQuick.Layouts
 import QtQuick.Shapes
 import Quickshell
 import Quickshell.Io
+import "FormatHelpers.js" as Utils
 
 Rectangle {
     id: root
 
     // ==================================================================
-    // 1. User Tweakable Configurations & Variables
+    // User Tweakable Configurations & Variables
     // ==================================================================
     required property int containerWidth
     required property string mountPoint
     required property string mountDev
     required property string modelSize
+    required property int widgetRadius
+    required property string widgetBGcolor
+    required property string widgetBorderColor
+    required property int widgetBorderWidth
+    required property int graphHeight
 
     height: mainColumn.height + 8
-    radius: rootWindow.widgetRadius
-    color: rootWindow.widgetBGcolor
-    border.color: rootWindow.widgetBorderColor
-    border.width: 2
+    radius: root.widgetRadius
+    color: widgetBGcolor
+    border.color: widgetBorderColor
+    border.width: widgetBorderWidth
 
     // Dynamic Sizing Metrics
     property int historyLimit: containerWidth - 2
@@ -51,16 +57,8 @@ Rectangle {
     // Cache object to bypass persistent binding drops
     property var _diskState: ({ lastSectorsRead: 0, lastSectorsWritten: 0, initialized: false })
 
-    // Helper formatting function to convert Bytes/sec to readable metrics (KB/s, MB/s)
-    function formatSpeed(bytes) {
-        if (bytes >= 1073741824) return (bytes / 1073741824).toFixed(1) + " GB/s"
-        if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + " MB/s"
-        if (bytes >= 1024) return (bytes / 1024).toFixed(1) + " KB/s"
-        return bytes.toFixed(0) + " B/s"
-    }
-
     // ==================================================================
-    // 2. Display Data on UI Layout
+    // Display Data on UI Layout
     // ==================================================================
     Column {
         id: mainColumn
@@ -116,7 +114,7 @@ Rectangle {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor // Changes cursor to a hand icon on hover
 
-                    // Fires a background system call instantly when clicked
+                    // opens Filemanager when clicked
                     onClicked: {
                         if (root.mountPoint && root.mountPoint !== "") {
                             fmLauncher.command = ["xdg-open", root.mountPoint];
@@ -138,13 +136,13 @@ Rectangle {
                 anchors.left: parent.left
                 color: "#00BBFF" // Bluish tone
                 font.pixelSize: 12
-                text: "Read: " + root.formatSpeed(root.diskReadBytesSec)
+                text: "Read: " + Utils.formatUnits(root.diskReadBytesSec, 3) + "B/s"
             }
             Text {
                 anchors.right: parent.right
                 color: "#00BBFF" // Bluish tone
                 font.pixelSize: 12
-                text: "(Max: " + root.formatSpeed(root.diskReadMax) + ")"
+                text: "(Max: " + Utils.formatUnits(root.diskReadMax, 3) + "B/s)"
             }
         }
 
@@ -154,7 +152,7 @@ Rectangle {
         Rectangle {
             id: readGraphBox
             width: parent.width
-            height: 40
+            height: root.graphHeight
             color: "#66000000"
             border.color: "#AA000000"
             border.width: 1
@@ -262,7 +260,7 @@ Rectangle {
         // -------------------------------------------
         Rectangle {
             width: parent.width
-            height: 40
+            height: root.graphHeight
             color: "#66000000"
             border.color: "#AA000000"
             border.width: 1
@@ -334,14 +332,14 @@ Rectangle {
                 y: -2
                 color: "#FF3333" // Reddish tone
                 font.pixelSize: 12
-                text: "Write: " + root.formatSpeed(root.diskWriteBytesSec)
+                text: "Write: " + Utils.formatUnits(root.diskWriteBytesSec, 3) + "B/s"
             }
             Text {
                 anchors.right: parent.right
                 y: -2
                 color: "#FF3333" // Reddish tone
                 font.pixelSize: 12
-                text: "(Max: " + root.formatSpeed(root.diskWriteMax) + ")"
+                text: "(Max: " + Utils.formatUnits(root.diskWriteMax, 3) + "B/s)"
             }
         }
     } // End of mainColumn

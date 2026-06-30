@@ -10,18 +10,24 @@ Rectangle {
     id: root
 
     // ==================================================================
-    // 1. User Tweakable Configurations & Variables
+    // User Tweakable Configurations & Variables
     // ==================================================================
     required property real containerWidth
     required property string sensorChipName
     required property string sensorKeyName
+    required property int widgetRadius
+    required property string widgetBGcolor
+    required property string widgetBorderColor
+    required property int widgetBorderWidth
+    required property int cpuSpacing
+    required property int graphHeight
 
     height: mainColumn.height + 8
-    radius: rootWindow.widgetRadius
-    color: rootWindow.widgetBGcolor
-    border.color: rootWindow.widgetBorderColor
-    border.width: 2
-    property int barSpacing: 1 
+    radius: root.widgetRadius
+    color: widgetBGcolor
+    border.color: widgetBorderColor
+    border.width: widgetBorderWidth
+    property int barSpacing: cpuSpacing
     property color barColor: "white"
 
     // This will hold the exact path discovered on startup (e.g. "/sys/class/hwmon/hwmon5/temp1_input")
@@ -45,7 +51,7 @@ Rectangle {
 
 
     // ==================================================================
-    // 2. Display Data on UI Layout (Standardized Positioner)
+    // Display Data on UI Layout (Standardized Positioner)
     // ==================================================================
     Column {
         id: mainColumn
@@ -82,7 +88,7 @@ Rectangle {
         Rectangle {
             id: cpuGraphRect
             width: parent.width
-            height: 50
+            height: root.graphHeight
             color: "#66000000"
             border.color: "#AA000000"
             border.width: 1
@@ -172,11 +178,11 @@ Rectangle {
         }
 
         // -----------------------------------------------
-        // Core Usage Container Vertical Bars
+        // --- 4. Core Usage Container Vertical Bars
         // -----------------------------------------------
         Rectangle {
             width: parent.width
-            height: 40
+            height: root.graphHeight
             color: "transparent"
 
             // Standardized Row Positioner handles bar grid spacing with 0% layout overhead
@@ -271,7 +277,7 @@ Rectangle {
     }
 
     // -----------------------------------------
-    // SHARED BACKEND PARSER 
+    // SHARED BACKEND PARSER for CPU stats
     // Reads /proc/stat once and handles whichever dataset is requested
     // -----------------------------------------
     FileView {
@@ -427,7 +433,7 @@ Rectangle {
             // RADIX SAFETY: Forcing a base-10 conversion guarantees clean numeric layouts
             let rawTemp = parseInt(txt, 10);
             if (!isNaN(rawTemp) && rawTemp > 0) {
-                root.cpuTemp = Math.round(rawTemp / 1000) + "°C";
+                root.cpuTemp = Math.floor(rawTemp / 1000) + "°C";
             }
         }
     }

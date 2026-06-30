@@ -45,7 +45,7 @@ PopupWindow {
 
         Text {
             id: tooltipText
-            
+
             // PERFORMANCE: Direct symmetrical padding mapping renders significantly 
             // cleaner and matches your exact sizing offsets perfectly.
             x: 5

@@ -5,20 +5,26 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import "FormatHelpers.js" as Utils
 
 Rectangle {
     id: root
 
     // ==================================================================
-    // 1. User Tweakable Configurations & Variables
+    // User Tweakable Configurations & Variables
     // ==================================================================
     required property real containerWidth
+    required property int widgetRadius
+    required property string widgetBGcolor
+    required property string widgetBorderColor
+    required property int widgetBorderWidth
+    required property int graphHeight
 
     height: mainColumn.height + 8
-    radius: rootWindow.widgetRadius
-    color: rootWindow.widgetBGcolor
-    border.color: rootWindow.widgetBorderColor
-    border.width: 2
+    radius: root.widgetRadius
+    color: widgetBGcolor
+    border.color: widgetBorderColor
+    border.width: widgetBorderWidth
 
     property real memTotal: 0
     property real memUsed: 0
@@ -31,7 +37,7 @@ Rectangle {
     property int maxHistoryPoints: Math.floor(containerWidth) - 2
 
     // ==================================================================
-    // 2. Display Data on UI Layout (Standardized Positioner)
+    // Display Data on UI Layout (Standardized Positioner)
     // ==================================================================
     Column {
         id: mainColumn
@@ -48,12 +54,12 @@ Rectangle {
             spacing: 4
 
             Text {
-                text: "Mem: " + root.formatSize(root.memTotal) + " / "
+                text: "Mem: " + Utils.formatUnits(root.memTotal, 3) + "B / "
                 color: "white"
                 font.pixelSize: 13
             }
             Text {
-                text: "Swap: " + root.formatSize(root.swapTotal)
+                text: "Swap: " + Utils.formatUnits(root.swapTotal, 2) + "B"
                 color: "white"
                 font.pixelSize: 13
             }
@@ -65,7 +71,7 @@ Rectangle {
         Rectangle {
             id: memGraphRect
             width: parent.width
-            height: 40 // Standardized graph frame heights
+            height: root.graphHeight
             color: "#66000000"
             border.color: "#AA000000"
             border.width: 1
@@ -138,7 +144,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: -2 // Shuts padding gaps tightly
                 // ROBUSTNESS: Ensure the percent readout degrades gracefully if undefined early on
-                text: "Mem used:  " + formatSize(root.memUsed) + "    (" + (typeof root.memPerUsed === "number" ? root.memPerUsed.toFixed(1) : "0.0") + "%)"
+                text: "Mem used:  " + Utils.formatUnits(root.memUsed, 2) + "B    (" + (typeof root.memPerUsed === "number" ? root.memPerUsed.toFixed(1) : "0.0") + "%)"
                 color: "#00FF00"
                 font.pixelSize: 12
             }
@@ -190,20 +196,11 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.top: parent.top
                 anchors.topMargin: -2
-                text: "Swap used:  " + formatSize(root.swapUsed) + "    (" + (typeof root.swapPerUsed === "number" ? root.swapPerUsed.toFixed(1) : "0.0") + "%)"
+                text: "Swap used:  " + Utils.formatUnits(root.swapUsed, 2) + "B    (" + (typeof root.swapPerUsed === "number" ? root.swapPerUsed.toFixed(1) : "0.0") + "%)"
                 color: "#FF3333"
                 font.pixelSize: 12
             }
         }
-    }
-
-    // Helper formatting function to convert bytes to readable metrics (KB, MB, GB)
-    function formatSize(value) {
-        // PERFORMANCE: Check the absolute number size instead of evaluating multiple multiplications inline
-        if (value >= 1073741824) return (value / 1073741824).toFixed(1) + " GB"
-        if (value >= 1048576) return (value / 1048576).toFixed(1) + " MB"
-        if (value >= 1024) return (value / 1024).toFixed(1) + " KB"
-        return (typeof value === "number" ? value.toFixed(1) : "0.0") + " B"
     }
 
     // ==================================================================
@@ -258,7 +255,9 @@ Rectangle {
         }
     }
 
+    // ==================================================================
     // High performance tracking loop execution cycle
+    // ==================================================================
     Timer {
         interval: 1000
         running: true

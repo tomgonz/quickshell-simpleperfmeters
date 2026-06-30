@@ -11,24 +11,28 @@ Rectangle {
     id: root
 
     // ==================================================================
-    // 1. User Tweakable Configurations & Variables
+    // User Tweakable Configurations & Variables
     // ==================================================================
     required property real containerWidth
+    required property int widgetRadius
+    required property string widgetBGcolor
+    required property string widgetBorderColor
+    required property int widgetBorderWidth
 
     // STABILITY FIX: Lock to a solid static layout height. This guarantees 
     // that shell.qml can dynamically shrink-wrap your master sidebar.
     height: 46
-    radius: rootWindow.widgetRadius
-    color: rootWindow.widgetBGcolor
-    border.color: rootWindow.widgetBorderColor
-    border.width: 2
+    radius: root.widgetRadius
+    color: widgetBGcolor
+    border.color: widgetBorderColor
+    border.width: widgetBorderWidth
 
     PwObjectTracker {
         objects: [ Pipewire.defaultAudioSink ]
     }
 
     // ==================================================================
-    // 2. Display Data on UI Layout (Standardized Positioner)
+    // Display Data on UI Layout (Standardized Positioner)
     // ==================================================================
     Column {
         id: mainColumn

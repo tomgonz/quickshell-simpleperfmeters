@@ -12,9 +12,13 @@ Rectangle {
     id: root
 
     // ==================================================================
-    // 1. User Tweakable Configurations & Variables
+    // User Tweakable Configurations & Variables
     // ==================================================================
     required property real containerWidth
+    required property int widgetRadius
+    required property string widgetBGcolor
+    required property string widgetBorderColor
+    required property int widgetBorderWidth
 
     // CONFIGURATION TOGGLE SWITCH: Set to true for 24hr format (with seconds) 
     // or false for 12hr format AM/PM (no seconds).
@@ -22,11 +26,11 @@ Rectangle {
 
     // SCALABLE LAYOUT FEATURE: Dynamically calculates card bounding height 
     // based on your global panel width setting.
-    height: Math.floor(0.420 * rootWindow.mywidth + 42)
-    radius: rootWindow.widgetRadius
-    color: rootWindow.widgetBGcolor
-    border.color: rootWindow.widgetBorderColor
-    border.width: 2
+    height: Math.floor(0.420 * width + 42)
+    radius: root.widgetRadius
+    color: widgetBGcolor
+    border.color: widgetBorderColor
+    border.width: widgetBorderWidth
 
     // --- Dynamic Time & Performance States ---
     property var currentTime: new Date()
@@ -35,7 +39,7 @@ Rectangle {
     property string timezoneText: "..."
 
     // ==================================================================
-    // 2. Display Data on UI Layout (Standardized Positioner)
+    // Display Data on UI Layout (Standardized Positioner)
     // ==================================================================
     Column {
         id: mainColumn
@@ -101,7 +105,7 @@ Rectangle {
 
             // DYNAMIC LAYOUT MANAGEMENT: When 24-hour mode shows text seconds, 
             // the graphic bar is safely hidden to reduce workspace layout redundancy.
-            //            visible: !root.use24Hour
+            //   visible: !root.use24Hour
 
             Rectangle {
                 anchors.left: parent.left
