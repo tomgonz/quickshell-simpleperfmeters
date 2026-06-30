@@ -64,6 +64,19 @@ Rectangle {
                 color: "white"
                 anchors.centerIn: parent
             }
+
+            HoverHandler {
+                id: textHover
+            }
+
+            Tooltip {
+                id: clockTooltip
+                target: targetText
+                show: textHover.hovered
+                text: "  UTC  "
+                fontPixelSize: 18
+            }
+
         }
 
         // ------------------------------------------------------

@@ -32,6 +32,7 @@ Rectangle {
     property var currentTime: new Date()
     property int currentSecond: currentTime.getSeconds()
     property string uptimeText: "Uptime: ..."
+    property string timezoneText: "..."
 
     // ==================================================================
     // 2. Display Data on UI Layout (Standardized Positioner)
@@ -83,13 +84,7 @@ Rectangle {
                 id: clockTooltip
                 target: targetText
                 show: textHover.hovered
-                text: {
-                    let d = root.currentTime;
-                    let hh = String(d.getUTCHours()).padStart(2, '0');
-                    let mm = String(d.getUTCMinutes()).padStart(2, '0');
-                    let ss = String(d.getUTCSeconds()).padStart(2, '0');
-                    return `UTC: ${hh}:${mm}:${ss}`;
-                }
+                text: root.timezoneText
                 fontPixelSize: 18
             }
         }
@@ -158,8 +153,9 @@ Rectangle {
                 onDoubleClicked: {
                     let dynamicYear = root.currentTime.getFullYear();
                     let dynamicMonth = root.currentTime.getMonth() + 1;
-                    let targetUrl = "https://www.timeanddate.com/calendar/monthly.html?year=" + dynamicYear + "&month=" + dynamicMonth + "&country=1";
+
                     // https://www.timeanddate.com/calendar/monthly.html?year=2026&month=6&country=1
+                    let targetUrl = "https://www.timeanddate.com/calendar/monthly.html?year=" + dynamicYear + "&month=" + dynamicMonth + "&country=1";
 
                     // SYSTEM PASS-THROUGH: Explicitly feed the URL to xdg-open via our background Process item
                     urlLauncher.command = ["sh", "-c", "xdg-open '" + targetUrl + "'"];
@@ -205,6 +201,32 @@ Rectangle {
     // High performance background execution channel for launching external system URL targets
     Process {
         id: urlLauncher
+    }
+
+    // One-Shot Timezone Path Reader (Fires exactly once at startup)
+    Process {
+        id: tzLinkReader
+        // Natively reads the symlink destination with zero shell forks or awk pipes
+        command: ["readlink", "/etc/localtime"]
+        running: true
+        stdout: StdioCollector {
+            onStreamFinished: {
+                let rawText = text ? text.trim() : "";
+
+                if (rawText.length > 0) {
+                    // remove first part and leave the timezone
+                    let cityString = rawText.replace(/.*zoneinfo\//, "");
+
+                    // Cleans up underscores natively and saves it as "New York"
+                    root.timezoneText = cityString.replace(/_/g, " ");
+                } else {
+                    // Bulletproof Fallback: Uses our verified JS offset math if readlink fails
+                    let dateStr = new Date().toString();
+                    let match = dateStr.match(/GMT[-+]\d{4}/);
+                    root.timezoneText = match ? match : "Local Time";
+                }
+            }
+        }
     }
 
     // ==================================================================
