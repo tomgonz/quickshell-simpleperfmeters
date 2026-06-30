@@ -6,13 +6,13 @@ A highly optimized, System Monitor Panel of widgets, Clock, Cpu, Memory, Network
 
 ## Widgets
 
-- **Clock:** Time, Date, Uptime, seconds bar, TOOLTIP for UTC time.
+- **Clock:** Time, Date, Uptime, seconds bar, TOOLTIP over time shows timezone, double click the Date to open a Calendar at timeanddate.com..
 - **ClockUTC:** Optional UTC clock, Time, Date, uncomment in shell.qml to activate
 - **CPU:** CPU Clock, CPU temp, CPU average usage, CPU usage per core vertical bars, TOOLTIP shows CPU model.
 - **Mem/Swap:** Memory / Swap, Total, Memory usage graph, Swap usage bar.
 - **Network:** Network, Device name, IP address, Upload graph bits/sec with scale max, and Download graph bits/sec with scale max.
-- **Disk:** Label for Disk/SSD type/size, mount point, Read bytes/sec graph with scale max, partition used bar, Write bytes/sec graph with scale max, TOOLTIP to show used percent over usage bar, TOOLTIP to show drive model over label drive type/size, TOOLTIP to show the device over the mount point.
-- **Volume:** Volume setting and display bar, mouse wheel or click, MUTE button.
+- **Disk:** Label for Disk/SSD type/size, mount point, Read bytes/sec graph with scale max, partition used bar, Write bytes/sec graph with scale max, TOOLTIP to show used percent over usage bar, TOOLTIP to show drive model over label drive type/size, TOOLTIP to show the device over the mount point, click the mount point to open a Filemanager to that point.
+- **Volume:** Volume setting and display bar, mouse wheel or click, click MUTE button.
 
 ## Features
 
@@ -41,27 +41,28 @@ A highly optimized, System Monitor Panel of widgets, Clock, Cpu, Memory, Network
    ```
 ## Requirements
 
-1. /proc files...
+1. Files...
    ```bash
+   /etc/localtime
    /proc/uptime
    /proc/stat
    /proc/cpuinfo
    /proc/stat
    /proc/diskstats
    /proc/meminfo
-   ```
-2. /sys files...
-   ```bash
    /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
    /sys/class/net/{interfaceName}/statistics/rx_bytes
    /sys/class/net/{interfaceName}/statistics/tx_bytes
    /sys/class/hwmon/hwmon*/*
    /sys/block/{drive}/device/model
    ```
-3. Bash commands...
+2. Bash commands...
    ```bash
    /usr/bin/df
    /usr/bin/ip
+   /usr/bin/sh
+   /usr/bin/readlink
+   /usr/bin/xdg-open
    ```
 ## Centralized Configuration Guide
 
