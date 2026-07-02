@@ -19,6 +19,7 @@ Rectangle {
     required property string widgetBGcolor
     required property string widgetBorderColor
     required property int widgetBorderWidth
+    required property bool isToolbox
 
     // CONFIGURATION TOGGLE SWITCH: Set to true for 24hr format (with seconds) 
     // or false for 12hr format AM/PM (no seconds).
@@ -155,19 +156,19 @@ Rectangle {
 
                 // Double click interaction safeguards against accidental link execution loops
                 onDoubleClicked: {
-                    let dynamicYear = root.currentTime.getFullYear();
-                    let dynamicMonth = root.currentTime.getMonth() + 1;
 
-                    // https://www.timeanddate.com/calendar/monthly.html?year=2026&month=6&country=1
-                    let targetUrl = "https://www.timeanddate.com/calendar/monthly.html?year=" + dynamicYear + "&month=" + dynamicMonth + "&country=1";
+                    let targetUrl = "https://www.timeanddate.com/calendar/monthly.html";
 
                     // SYSTEM PASS-THROUGH: Explicitly feed the URL to xdg-open via our background Process item
-                    urlLauncher.command = ["sh", "-c", "xdg-open '" + targetUrl + "'"];
+                    if (root.isToolbox) {
+                        urlLauncher.command = ["host-spawn", "xdg-open", targetUrl ];
+                    } else {
+                        urlLauncher.command = ["xdg-open", targetUrl ];
+                    }
                     urlLauncher.running = true;
                 }
             }
         }
-
 
         // -------------------------------------------------
         // --- 4. Accent Separation Rule Bar ---

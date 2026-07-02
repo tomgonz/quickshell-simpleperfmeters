@@ -90,5 +90,9 @@ To swap out, add, or customize your storage monitoring components, look into the
 
 Ensure any new disk widget `id` is in the masking table structure (`mask: Region { ... }`) to enable correct backdrop window transparency clip-outs and Tooltips work correctly.
 
+## Tips when using enctryped drives
+
+In the disk section of the shell.qml, set the mountPoint, and set the mountDev to the real disk device with partition, like sda3 or nvme0n1p2, so it can find the IO stats and device model for the Tooltip.
+
 ## License
 GPL-3.0

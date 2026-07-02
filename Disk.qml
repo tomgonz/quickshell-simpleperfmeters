@@ -24,6 +24,7 @@ Rectangle {
     required property string widgetBorderColor
     required property int widgetBorderWidth
     required property int graphHeight
+    required property bool isToolbox
 
     height: mainColumn.height + 8
     radius: root.widgetRadius
@@ -37,6 +38,7 @@ Rectangle {
     property string devicePath: ""            // Will become "/dev/nvme1n1p3" dynamically
     property string deviceName: ""            // Will become "nvme1n1p3" dynamically
     property string ssdModel: ""              // Will become "SSD Model number" dynamically
+    property string toolboxDev: ""
 
     // --- Output Performance & Graph Metrics ---
     readonly property real diskReadBytesSec: _diskReadBytesSec
@@ -116,10 +118,13 @@ Rectangle {
 
                     // opens Filemanager when clicked
                     onClicked: {
-                        if (root.mountPoint && root.mountPoint !== "") {
+                        // Use the clean property passed from the shell instantly!
+                        if (root.isToolbox) {
+                            fmLauncher.command = ["host-spawn", "xdg-open", root.mountPoint];
+                        } else {
                             fmLauncher.command = ["xdg-open", root.mountPoint];
-                            fmLauncher.running = true;
                         }
+                        fmLauncher.running = true;
                     }
                 }
             }
@@ -215,6 +220,7 @@ Rectangle {
                 }
             }
         }
+
         // -------------------------------------------
         // --- 3. Space Used Horizontal Bar (Orange)
         // -------------------------------------------
@@ -362,6 +368,7 @@ Rectangle {
             if (/p\d+$/.test(clean))          return clean.replace(/p\d+$/, "");
             if (/^nvme\d+n\d+$/.test(clean))  return clean;
             if (/^mmcblk\d+$/.test(clean))    return clean;
+            if (/^dm-\d+$/.test(clean))       return clean;
 
             return clean.replace(/\d+$/, "");
         }
@@ -399,9 +406,6 @@ Rectangle {
                     let cleanPath = lines[lines.length - 1].trim();
                     root.devicePath = cleanPath;
                     root.deviceName = root.mountDev || cleanPath.split("/").pop();
-
-                    // NOW trigger the next process safely
-                    spaceLookup.running = true;
                 }
             }
         }
@@ -411,8 +415,8 @@ Rectangle {
     // This should fire once every 5 seconds.
     Process {
         id: spaceLookup
-        command: ["df", "--output=pcent", root.devicePath]
-        running: false 
+        command: ["df", "--output=pcent", root.mountPoint]
+        running: true 
 
         stdout: StdioCollector {
             onStreamFinished: {
@@ -436,7 +440,7 @@ Rectangle {
         id: diskUsedTimer
         interval: 5000     // 5 seconds
         repeat: true
-        running: root.devicePath !== ""
+        running: root.mountPoint !== ""
 
         onTriggered: {
             spaceLookup.running = true

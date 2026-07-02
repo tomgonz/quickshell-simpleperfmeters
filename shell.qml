@@ -39,6 +39,7 @@ ShellRoot {
         property int widgetSpacing: 5
         property int cpuSpacing: 1
         property int graphHeight: 40
+        property bool isToolbox: false
 
         // ==================================================================
         // Hardware Thermal Configuration Controls
@@ -118,6 +119,7 @@ ShellRoot {
                 widgetBGcolor: rootWindow.widgetBGcolor
                 widgetBorderColor: rootWindow.widgetBorderColor
                 widgetBorderWidth: rootWindow.widgetBorderWidth
+                isToolbox: rootWindow.isToolbox
             }
 /******
             // ----------------------------------
@@ -150,7 +152,6 @@ ShellRoot {
                 graphHeight: rootWindow.graphHeight
             }
 
-
             // ----------------------------------
             // MemSwap Widget
             // ----------------------------------
@@ -180,7 +181,6 @@ ShellRoot {
                 graphHeight: rootWindow.graphHeight
             }
 
-
             // ----------------------------------
             // Disk widget 1
             // ----------------------------------
@@ -197,6 +197,7 @@ ShellRoot {
                 widgetBorderColor: rootWindow.widgetBorderColor
                 widgetBorderWidth: rootWindow.widgetBorderWidth
                 graphHeight: rootWindow.graphHeight
+                isToolbox: rootWindow.isToolbox
             }
 
             // ----------------------------------
@@ -215,6 +216,7 @@ ShellRoot {
                 widgetBorderColor: rootWindow.widgetBorderColor
                 widgetBorderWidth: rootWindow.widgetBorderWidth
                 graphHeight: rootWindow.graphHeight
+                isToolbox: rootWindow.isToolbox
             }
 
             // ----------------------------------
@@ -233,6 +235,7 @@ ShellRoot {
                 widgetBorderColor: rootWindow.widgetBorderColor
                 widgetBorderWidth: rootWindow.widgetBorderWidth
                 graphHeight: rootWindow.graphHeight
+                isToolbox: rootWindow.isToolbox
             }
 
             // ----------------------------------
@@ -249,6 +252,19 @@ ShellRoot {
             }
 
         } // End of master widgetColumn
+    }
+
+    // ==================================================================
+    // Add this single FileView component down with your panel window channels
+    // ------------------------------------------------------------------
+    FileView {
+        id: globalContainerCheck
+        path: "/run/.toolboxenv"
+        printErrors: false // Silences terminal error logs when on the host system
+
+        onLoaded: {
+            rootWindow.isToolbox = true;
+        }
     }
 }
 
