@@ -255,7 +255,7 @@ Rectangle {
                 }
 
                 Tooltip {
-                    id: cpuTooltip 
+                    id: diskTooltip 
                     target: barTrack
                     show: textHover.hovered
                     text: root.diskPercentUsed + "%"
