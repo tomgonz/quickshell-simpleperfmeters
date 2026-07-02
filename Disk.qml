@@ -38,7 +38,10 @@ Rectangle {
     property string devicePath: ""            // Will become "/dev/nvme1n1p3" dynamically
     property string deviceName: ""            // Will become "nvme1n1p3" dynamically
     property string ssdModel: ""              // Will become "SSD Model number" dynamically
-    property string toolboxDev: ""
+    property string diskstatsDev: ""
+    property string tooltipDev: ""
+    property string luksPath: ""
+    property string dmDevice: ""
 
     // --- Output Performance & Graph Metrics ---
     readonly property real diskReadBytesSec: _diskReadBytesSec
@@ -109,7 +112,7 @@ Rectangle {
                     id: ssdDevTooltip
                     target: diskMountLabel
                     show: textHover3.hovered
-                    text: root.deviceName
+                    text: root.tooltipDev
                     fontPixelSize: 14
                 }
                 MouseArea {
@@ -354,7 +357,7 @@ Rectangle {
     //  Data Gathering & Shell Resolution Systems
     // ==================================================================
 
-    // Takes the mountName and sets the drive model into ssdModel.
+    // Takes the deviceName and sets the drive model into ssdModel.
     // Fires only once at start.
     FileView {
         id: modelFile
@@ -382,7 +385,6 @@ Rectangle {
         }
     }
 
-    // High performance background execution channel for launching your local file manager
     Process {
         id: fmLauncher
     }
@@ -392,21 +394,67 @@ Rectangle {
         path: "/proc/diskstats"
     }
 
-    // Takes the mountPoint and sets the drive device name into deviceName.
-    // Fires only once at start.
     Process {
         id: deviceResolver
+
+        // One-shot line that runs df to find the dev name
         command: ["df", "--output=source", root.mountPoint]
-        running: true 
+        running: !root.mountDev || root.mountDev === "" // Runs once on startup if empty
 
         stdout: StdioCollector {
             onStreamFinished: {
-                let lines = this.text.trim().split("\n");
+                let lines = text ? text.trim().split("\n") : [];
                 if (lines.length >= 2) {
-                    let cleanPath = lines[lines.length - 1].trim();
-                    root.devicePath = cleanPath;
-                    root.deviceName = root.mountDev || cleanPath.split("/").pop();
+                    let cleanPath = lines[lines.length - 1].trim(); // "/dev/mapper/luks-..." or "/dev/sda3"
+                    let baseName = cleanPath.split("/").pop();      // "luks-8ee685..." or "sda3"
+
+                    // CHECK FOR ENCRYPTION NATIVELY IN JAVASCRIPT
+                    if (baseName.indexOf("luks-") !== -1) {
+                        // IF IT IS ENCRYPTED:
+                        root.luksPath = cleanPath;
+                        luks2dmResolver.running = true;
+                    } else {
+                        // IF IT IS A STANDARD NATIVE DRIVE:
+                        root.diskstatsDev = baseName;
+                        root.tooltipDev = baseName;
+                        root.deviceName = baseName;
+                    }
                 }
+            }
+        }
+    }
+
+    Process {
+        id: luks2dmResolver
+        running: false // Sits dormant until Process 1 turns it on
+
+        // use enctryped luks device and find intermidiate dev
+        command: ["readlink", "-f", root.luksPath]
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                let rawText = text ? text.trim() : "";
+                if (rawText.length > 0) {
+                    // Extracts the short token (e.g., "/dev/dm-0" -> "dm-0")
+                    root.dmDevice = rawText.split("/").pop();
+                    dm2phyResolver.running = true;
+                }
+            }
+        }
+    }
+
+    Process {
+        id: dm2phyResolver
+        running: false // Sits dormant until Process 2 turns it on
+
+        // find the real physical device name
+        command: ["sh", "-c", "basename " + "/sys/class/block/" + root.dmDevice + "/slaves/*"]
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.diskstatsDev = text ? text.trim() : "";
+                root.tooltipDev = root.diskstatsDev;
+                root.deviceName = root.diskstatsDev;
             }
         }
     }
@@ -463,7 +511,7 @@ Rectangle {
             let lines = rawData.split("\n")
             let currentReadSectors = 0
             let currentWriteSectors = 0
-            let targetDev = root.deviceName
+            let targetDev = root.diskstatsDev
             let found = false;
 
             for (let i = 0; i < lines.length; i++) {

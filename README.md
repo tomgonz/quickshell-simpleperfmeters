@@ -56,6 +56,7 @@ Some features will not work correctly when run in a virtualized environment.
    /sys/class/net/{interfaceName}/statistics/rx_bytes
    /sys/class/net/{interfaceName}/statistics/tx_bytes
    /sys/class/hwmon/hwmon*/*
+   /sys/class/block/*
    /sys/block/{drive}/device/model
    ```
 2. Bash commands...
@@ -63,8 +64,10 @@ Some features will not work correctly when run in a virtualized environment.
    /usr/bin/df
    /usr/bin/ip
    /usr/bin/sh
+   /usr/bin/basename
    /usr/bin/readlink
    /usr/bin/xdg-open
+   /usr/bin/host-spawn    ## only needed in Toolbox
    ```
 ## Centralized Configuration Guide
 
@@ -83,16 +86,20 @@ All primary environment configurations are managed right at the top of `shell.qm
 
 To swap out, add, or customize your storage monitoring components, look into the second half of `shell.qml`. Each disk panel consists of a structural background widget box. To map a device, modify the 4 specific commented lines:
 
-1. Update the unique container id for each disk widget (`id: diskWidgetX`).
-2. Add your custom visual descriptive drive label string (`text: "Drive Model Type"`).
+1. Update the unique container id when you have more than one disk widget (`id: diskWidgetX`).
+2. Add your custom visual descriptive drive label string (`text: "Drive Model Type"`) or whatever you like.
 3. Set your true system mount path string to monitor (`mountPoint: "/target"`). This is used for partition space used, and will lookup the device to get IO stats.
-4. In some virtualization cases you may need to set the disk device (`mountDev: "nvme0n1p3"`). Start with this blank, only set this if you know you need to.
+4. In some virtualization cases you may need to set the disk device (`mountDev: "nvme0n1p3"`). Start with this blank, only set this if you know you need to. See other comments below.
 
 Ensure any new disk widget `id` is in the masking table structure (`mask: Region { ... }`) to enable correct backdrop window transparency clip-outs and Tooltips work correctly.
 
 ## Tips when using enctryped drives
 
-In the disk section of the shell.qml, set the mountPoint, and set the mountDev to the real disk device with partition, like sda3 or nvme0n1p2, so it can find the IO stats and device model for the Tooltip.
+It should not resolve encrypted drives to the correct physical device automatically.  But if you run into a problem, in the disk section of the shell.qml, set the mountPoint, and also set the mountDev to the real disk device with partition, like sda3 or nvme0n1p2, so it can find the IO stats and device model for the Tooltip.
+
+## Tips when using in Toolbox
+
+It should work find in Toolbox, but choose a mountPoint that will resolve a /dev/something with df inside the Toolbox.  If the mountPoint you chose returns "overlay", some features will not work.
 
 ## License
 GPL-3.0
