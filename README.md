@@ -95,11 +95,11 @@ Ensure any new disk widget `id` is in the masking table structure (`mask: Region
 
 ## Tips when using enctryped drives
 
-It should not resolve encrypted drives to the correct physical device automatically.  But if you run into a problem, in the disk section of the shell.qml, set the mountPoint, and also set the mountDev to the real disk device with partition, like sda3 or nvme0n1p2, so it can find the IO stats and device model for the Tooltip.
+It should resolve encrypted drives to the correct physical device automatically.  But if you run into a problem, in the disk section of the shell.qml, set the mountPoint, and also set the mountDev to the real disk device with partition, like sda3 or nvme0n1p2, so it can find the IO stats and device model for the Tooltip.
 
 ## Tips when using in Toolbox
 
-It should work find in Toolbox, but choose a mountPoint that will resolve a /dev/something with df inside the Toolbox.  If the mountPoint you chose returns "overlay", some features will not work.
+It should work fine in Toolbox, but choose a mountPoint that will resolve a /dev/something with df inside the Toolbox.  If the mountPoint you chose returns "overlay", some features will not work, best to choose a different mount point that does resolve.
 
 ## License
 GPL-3.0
