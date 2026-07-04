@@ -1,20 +1,33 @@
 # Tom's Quickshell System Monitor Widgets Panel
 
-A highly optimized, System Monitor Panel of widgets, Clock, Cpu, Memory, Network, Disks, Volume,  zero-process-fork monitoring dashboard built for Linux desktop setups using `quickshell`. This widget cluster reads telemetry data directly from virtual kernel file systems (`/proc` and `/sys`), ensuring extremely low CPU usage and near-zero runtime latency.
+A highly optimized, System Monitor Panel of widgets, Clock, Cpu, Memory, Network, Disks, Volume, dashboard built for Linux desktop setups using `quickshell`. This widget cluster reads telemetry data directly from virtual kernel file systems (`/proc` and `/sys`), ensuring extremely low CPU usage and near-zero runtime latency.
 
 ![Screenshot](tom-qs-sysmon.png) <!-- Add a nice screenshot here -->
 
 ## Widgets
 
-- **Clock:** Time, Date, Uptime, seconds bar, TOOLTIP over time shows timezone, double click the Date to open a Calendar at timeanddate.com..
-- **ClockUTC:** Optional UTC clock, Time, Date, uncomment in shell.qml to activate
-- **CPU:** CPU Clock, CPU temp, CPU average usage, CPU usage per core vertical bars, TOOLTIP shows CPU model.
+- **Clock:** Time, Seconds bar, Date, Uptime.
+- **ClockUTC:** Optional UTC clock, Time, Date. (uncomment in shell.qml to activate)
+- **CPU:** CPU Clock, CPU temp, CPU average usage, CPU usage per core vertical bars.
 - **Mem/Swap:** Memory / Swap, Total, Memory usage graph, Swap usage bar.
 - **Network:** Network, Device name, IP address, Upload graph bits/sec with scale max, and Download graph bits/sec with scale max.
-- **Disk:** Label for Disk/SSD type/size, mount point, Read bytes/sec graph with scale max, partition used bar, Write bytes/sec graph with scale max, TOOLTIP to show used percent over usage bar, TOOLTIP to show drive model over label drive type/size, TOOLTIP to show the device over the mount point, click the mount point to open a Filemanager to that point.
+- **Disk:** Label for Disk/SSD type/size, mount point, Read bytes/sec graph with scale max, partition used bar, Write bytes/sec graph with scale max.
 - **Volume:** Volume setting and display bar, mouse wheel or click, click MUTE button.
 
-Some features will not work correctly when run in a virtualized environment.
+## Tooltips
+
+- **Timezone** hover over Time in main clock widget.
+- **CPOU Model** hover over the CPU graph.
+- **Disk Model** hover over the Disk label you set for modelSize in shell.qml.
+- **Disk Device** hover over the mountPoint on the Disk widget.
+- **Disk Usage Percent** hover over the orange usage bar.
+
+## Clickables
+
+- **24hr Time** double click on the Time and it will toggle between AM/PM to 24hr clock.
+- **open Calendar** click on the Date to open a Month calendar at timeanddate.com
+- **open Filemanager** click on the mountPoint and it opens a File manager to that location.
+- **Audio Mute** click on MUTE in Volume to toggle Mute.
 
 ## Features
 
@@ -24,7 +37,10 @@ Some features will not work correctly when run in a virtualized environment.
 
 ## Installation & Deployment
 
-1. Make sure you have `quickshell` package installed on your system.  Either from your repo, or from: https://git.outfoxxed.me/quickshell/quickshell.git  These System Monitor widgets were tested with Quickshell 0.2.1 from the Fedora repo.  Should work on the latest 0.3.0 from the GIT repo.
+1. Make sure you have `quickshell` package installed on your system.  Either from your repo, or from: https://git.outfoxxed.me/quickshell/quickshell.git  My System Monitor widgets were tested with Quickshell 0.2.1 from the Fedora repo.  Should work on the latest 0.3.0 from the GIT repo.
+   ```bash
+   sudo dnf install quickshell
+   ```
 2. Clone or move these configuration files into your local directory:
    ```bash
    mkdir -p ~/.config/quickshell
@@ -71,7 +87,7 @@ Some features will not work correctly when run in a virtualized environment.
    ```
 ## Centralized Configuration Guide
 
-All primary environment configurations are managed right at the top of `shell.qml`. Open `shell.qml` to adjust the variables below to match your hardware layout:
+All primary environment configurations are managed right at the top of `shell.qml`. You should not need to edit any other files. Open `shell.qml` to adjust the variables below to match your hardware layout:
 
 | Variable | Default Value | Description |
 | :--- | :--- | :--- |
@@ -84,22 +100,38 @@ All primary environment configurations are managed right at the top of `shell.qm
 
 ## Modifying Storage Widgets
 
-To swap out, add, or customize your storage monitoring components, look into the second half of `shell.qml`. Each disk panel consists of a structural background widget box. To map a device, modify the 4 specific commented lines:
+To swap out, add, or customize your storage monitoring components, look at the Disk { ...} sections in the second half of `shell.qml`. Each disk panel consists of a Disk { ... } widget box.
 
-1. Update the unique container id when you have more than one disk widget (`id: diskWidgetX`).
-2. Add your custom visual descriptive drive label string (`text: "Drive Model Type"`) or whatever you like.
-3. Set your true system mount path string to monitor (`mountPoint: "/target"`). This is used for partition space used, and will lookup the device to get IO stats.
-4. In some virtualization cases you may need to set the disk device (`mountDev: "nvme0n1p3"`). Start with this blank, only set this if you know you need to. See other comments below.
-
-Ensure any new disk widget `id` is in the masking table structure (`mask: Region { ... }`) to enable correct backdrop window transparency clip-outs and Tooltips work correctly.
+1. To remove a Disk widget, remove the Disk { ... } section or commend it out with // or /* */.
+2. To add another Disk widget, copy and paste a new Disk { ... } widget section in the shell.qml file.
+3. Update the unique container id when you have more than one disk widget (`id: diskWidgetX`).
+4. Add your custom visual descriptive drive label string (`modelSize: "Drive Model Type"`) or whatever you like.  It's up to you, but don't make it too long.  It will be displayed on the Disk widget.
+5. Set your true system mount path string to monitor (`mountPoint: "/home"`). This is used for partition space used, and will lookup the device to get IO stats.
+6.  Ensure any new disk widget `id` is in the masking table structure (`mask: Region { ... }`) to enable correct backdrop window transparency clip-outs and Tooltips work correctly.
 
 ## Tips when using enctryped drives
 
-It should resolve encrypted drives to the correct physical device automatically.  But if you run into a problem, in the disk section of the shell.qml, set the mountPoint, and also set the mountDev to the real disk device with partition, like sda3 or nvme0n1p2, so it can find the IO stats and device model for the Tooltip.
+It should resolve encrypted drives to the correct physical device automatically, to be used with the disk IOi and disk Model lookup.  But if the Disk IO status does not work, and the disk model Tooltip does not work, in the disk section of the shell.qml, you set the mountPoint, and also set the mountDev to the real disk device with partition, like sda3 or nvme0n1p2, so it can find the IO stats and device model for the Tooltip.
 
 ## Tips when using in Toolbox
 
-It should work fine in Toolbox, but choose a mountPoint that will resolve a /dev/something with df inside the Toolbox.  If the mountPoint you chose returns "overlay", some features will not work, best to choose a different mount point that does resolve.
+Typically you would only be in a Toolbox on an immutable Linux like Fedora Atomic.  The widgets should run fine in Toolbox, but choose a mountPoint that will resolve a /dev/something with df inside the Toolbox.  If the mountPoint you chose returns "overlay" for the device with "df /home", some features will not work, best to choose a different mount point dir that does resolve to a real /dev/something. For the click on Date to open a Calendar web page, and for click on disk partition dir to open a file manager, you need to install host-spawn app inside the Toolbox. Also, you will need to change the symbolic link of the /etc/localtime file so the Clock can find the Timezone it displays in the tooltip correctly.
+   ```bash
+   *inside Toolbox*
+   sudo dnf install host-spawn
+
+   *host linux*
+   ls -l /etc/localtime
+   lrwxrwxrwx. 1 root root 38 Jul  2 01:17 /etc/localtime -> ../usr/share/zoneinfo/America/New_York
+
+   *inside Toolbox*
+   toolbox enter mytoolboxname
+   cd /etc
+   sudo rm localtime
+   sudo ln -s ../usr/share/zoneinfo/America/New_York  localtime
+
+   ```
+
 
 ## License
 GPL-3.0
