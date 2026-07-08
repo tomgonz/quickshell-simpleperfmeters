@@ -264,17 +264,21 @@ Rectangle {
     FileView {      
         id: freqReader 
         path: "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
+        printErrors: false
 
         onLoaded: { 
             // 1. PERFORMANCE: Direct functional lookup removes heavy engine overhead layers
-            let content = text().trim();
-            if (!content) return;
+            let content = text();
+    
+            if (!content || !(content = content.trim())) return;
 
             // 2. RADIX SAFETY: Forcing a base-10 conversion ensures bulletproof arithmetic parsing
             let khz = parseInt(content, 10);
             if (!isNaN(khz)) {
                 root.cpuFreq = (khz / 1000000).toFixed(2) + " GHz";
-            }       
+            } else {
+                timerFreq.stop(); // Kills ONLY the CPU Freq loop
+            }
         }           
     }
 
@@ -480,14 +484,28 @@ Rectangle {
         onTriggered: cpuTempReader.reload()
     }
 
-    // Timer for the CPU graph update and CPU frequency speed at 1000 ms
+    // Timer for the CPU frequency speed at 1000 ms
     Timer {
+        id: timerFreq
         interval: 1000
         running: true
         repeat: true
         triggeredOnStart: true
         onTriggered: {
             freqReader.reload();
+            if (!freqReader.text()) {
+                timerFreq.stop();
+            }
+        }
+    }
+
+    // Timer for the CPU graph update at 1000 ms
+    Timer {
+        interval: 1000
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: {
             unifiedStatReader._parseGraphData = true;
             unifiedStatReader.reload();
         }
